@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; script-src 'self' 'unsafe-inline';">
+    <title>观微 HSE资讯中心</title>
+    <!-- 原样式全部保留 -->
+    <style>
+        /* --- 全局色彩与视觉系统 --- */
+        :root {
+            --primary-color: #0A2540;   /* 午夜蓝 */
+            --accent-color: #00D9C0;    /* 赛博青 */
+            --dark-text: #2c3e50;       /* 更柔和的深灰文字 */
+            --light-text: #7f8c8d;      /* 浅灰文字 */
+            --bg-color: #FFFFFF;        /* 主背景-白 */
+            --bg-alt-color: #F8F9FA;    /* 交替背景-淡雅灰 */
+            --border-color: #EAECEE;    /* 边框颜色 */
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            --container-width: 1100px;
+            --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.04 );
+            --card-hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+
+            /* 1. 为每个卡片定义独立的颜色变量 */
+            --card1-bg: #EBF5FF; /* 法规 - 淡蓝 */
+            --card1-icon: #3498DB;
+            --card2-bg: #E8F6F3; /* 知识 - 淡绿 */
+            --card2-icon: #2ECC71;
+            --card3-bg: #F4ECF7; /* 洞察 - 淡紫 */
+            --card3-icon: #9B59B6;
+            --card4-bg: #FEF9E7; /* 发展 - 淡黄 */
+            --card4-icon: #F39C12;
+        }
+
+        /* --- 基础重置与设置 --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-family);
+            line-height: 1.7;
+            background-color: var(--bg-color);
+            color: var(--dark-text);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .container { max-width: var(--container-width); margin: 0 auto; padding: 0 20px; }
+        a { color: var(--primary-color); text-decoration: none; cursor: pointer; transition: color 0.2s ease-in-out; }
+        a:hover { color: var(--accent-color); }
+
+        /* --- 头部与导航 --- */
+        header {
+            background-color: rgba(255, 255, 255, 0.85);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky; top: 0; z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+        header .logo img { height: 40px; }
+        header nav a { margin-left: 25px; font-weight: 600; font-size: 16px; color: var(--light-text); }
+        header nav a:hover { color: var(--primary-color); }
+
+        /* --- 首页 Hero Section --- */
+        .hero {
+            text-align: center; padding: 4rem 1rem;
+            background-color: var(--bg-alt-color);
+            margin: 2rem 0; border-radius: 12px;
+        }
+        .hero h1 { font-size: 2.5rem; font-weight: 700; color: var(--primary-color); margin-bottom: 1rem; }
+        .hero p { font-size: 1.1rem; color: var(--light-text); max-width: 600px; margin: 0 auto; }
+
+        /* --- 2. 优化后的卡片布局 (2+2 Grid) --- */
+        .main-sections {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            grid-template-columns: 1fr;
+        }
+        @media (min-width: 768px) {
+            .main-sections {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .card {
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--card-hover-shadow);
+        }
+        .card-content { flex-grow: 1; }
+        .card-icon { margin-bottom: 1.5rem; }
+        .card h2 { font-size: 1.6rem; font-weight: 600; color: var(--primary-color); margin-bottom: 1rem; }
+        .card p { font-size: 1rem; margin-bottom: 2rem; color: var(--light-text); }
+        .card-link {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-top: auto;
+            align-self: flex-start;
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .card-link:hover {
+            background-color: #fff;
+            color: var(--primary-color);
+        }
+
+        /* --- 3. 为每个卡片应用独立颜色 --- */
+        #card-regulations { background-color: var(--card1-bg); }
+        #card-regulations .card-icon { color: var(--card1-icon); }
+
+        #card-knowledge { background-color: var(--card2-bg); }
+        #card-knowledge .card-icon { color: var(--card2-icon); }
+
+        #card-insights { background-color: var(--card3-bg); }
+        #card-insights .card-icon { color: var(--card3-icon); }
+
+        #card-career { background-color: var(--card4-bg); }
+        #card-career .card-icon { color: var(--card4-icon); }
+      
+      /* --- 时间轴专属样式 --- */
+.timeline-container-wrapper { max-width: 900px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.timeline { position: relative; padding-left: 50px; border-left: 3px solid #e74c3c; }
+.timeline-item { position: relative; margin-bottom: 40px; }
+.timeline-item:last-child { margin-bottom: 0; }
+.timeline-dot { position: absolute; left: -59px; top: 0; width: 15px; height: 15px; background-color: #c0392b; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 3px #e74c3c; }
+.timeline-content { background-color: #fdfefe; padding: 20px; border-radius: 6px; border: 1px solid #e0e0e0; }
+.timeline-date { font-size: 1.2em; font-weight: bold; color: #e74c3c; margin-bottom: 10px; }
+.timeline-title { font-size: 1.1em; font-weight: bold; margin-bottom: 10px; }
+.timeline-details { font-size: 0.95em; margin-bottom: 15px; }
+.timeline-details strong { color: #555; }
+.timeline-impact { background-color: #f8f9fa; border-left: 4px solid #3498db; padding: 15px; margin-top: 15px; border-radius: 4px; }
+.timeline-impact h4 { margin-top: 0; color: #2980b9; }
+.timeline-impact ul { padding-left: 20px; margin-bottom: 0; }
+.timeline-impact li { margin-bottom: 8px; }
+.year-section { margin-top: 30px; margin-bottom: 20px; padding-left: 20px; font-size: 1.5em; font-weight: bold; color: #2c3e50; border-bottom: 1px solid #ecf0f1; }
+
+
+        /* --- 其他页面样式 --- */
+        .breadcrumb { padding: 1rem 0; color: var(--light-text); margin-bottom: 2rem; font-size: 0.9rem; }
+        .breadcrumb a { color: var(--light-text); }
+        #section-title { color: var(--primary-color); }
+        #section-description { color: var(--light-text); margin-top: 0rem; margin-bottom: 2rem; }
+        .article-list .article-item { padding: 1.5rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 1.5rem; transition: box-shadow 0.3s ease, border-color 0.3s ease; }
+        .article-item:hover { box-shadow: var(--card-shadow); border-color: #ccc; }
+        .item-title a { color: var(--dark-text); font-size: 1.2rem; font-weight: 600; }
+        .item-title a:hover { color: var(--primary-color); }
+        .item-excerpt { margin: 0.5rem 0; color: var(--light-text); }
+        .item-meta { font-size: 0.9rem; color: #95a5a6; }
+        .article-content .article-header { text-align: center; margin-bottom: 3rem; }
+        .article-content h1 { font-size: 2.2rem; font-weight: 700; color: var(--primary-color); margin-bottom: 1rem; }
+        .article-meta { font-size: 0.9rem; color: #95a5a6; }
+        .article-body { font-size: 1.1rem; line-height: 1.8; }
+        .article-body h2 { font-size: 1.6rem; font-weight: 600; margin: 2.5rem 0 1rem; border-bottom: 3px solid var(--accent-color); padding-bottom: 0.5rem; color: var(--primary-color); }
+        .article-body h3 { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 1rem; color: var(--primary-color); }
+        .article-body p, .article-body ul, .article-body ol { margin-bottom: 1.5rem; }
+        .article-body ul, .article-body ol { padding-left: 1.5rem; }
+        .article-body blockquote { margin: 1.5rem 0; padding: 1rem 1.5rem; background-color: var(--bg-alt-color); border-left: 5px solid var(--accent-color); font-style: normal; color: var(--light-text); }
+        .article-body img { max-width: 100%; height: auto; border-radius: 8px; margin: 1rem 0; }
+        footer { background-color: var(--primary-color); color: #fff; text-align: center; padding: 3rem 0; margin-top: 4rem; }
+        footer a { color: #fff; opacity: 0.8; }
+        footer a:hover { opacity: 1; }
+        @media (max-width: 768px) {
+            header nav { display: none; }
+            .hero h1 { font-size: 2rem; }
+            .article-content h1 { font-size: 1.8rem; }
+            .article-body { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+           <div class="logo">
+    <a onclick="navigateTo('home')" style="display: inline-block; text-decoration: none; color: #0A2540; font-weight: bold; font-size: 20px; line-height: 40px; padding: 0 10px;">
+        观微 HSE -见微知著 防危于初
+    </a>
+</div>
+            <nav>
+                <a onclick="navigateTo('home')">首页</a>
+                <a onclick="alert('即将跳转到“关于我们”页面')">关于我们</a>
+                <a onclick="alert('即将跳转到“联系我们”页面')">联系我们</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" id="page-container">
+        <!-- 页面内容将由JavaScript动态注入这里 -->
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 观微 HSE . All Rights Reserved.</p>
+          <p><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备2025140583号</a></p>
+            <p><a onclick="navigateTo('level3', {articleId: 'policy-privacy'})">隐私政策</a> | <a onclick="navigateTo('level3', {articleId: 'policy-terms'})">服务条款</a></p>
+        </div>
+    </footer>
+
+    <!-- HTML 模板区域 -->
+    <template id="home-template">
+        <section id="home" class="page">
+            <div class="hero">
+                <h1>观微HSE 专业资讯与前沿洞察平台</h1>
+                <p>整合法规标准，分享知识案例，洞察行业趋势，助力职业发展</p>
+            </div>
+            <div class="main-sections">
+                <div class="card" id="card-regulations">
+                    <div class="card-content">
+                        <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><path d="M12 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path></svg></div>
+                        <h2>法规标准库</h2><p>快速查询最新HSE法律、法规与国家/行业标准 ，提供深度政策解读。</p>
+                    </div>
+                    <a onclick="navigateTo('level2', {section: 'regulations'})" class="card-link">进入板块 →</a>
+                </div>
+                <div class="card" id="card-knowledge">
+                    <div class="card-content">
+                        <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v15H6.5A2.5 2.5 0 0 1 4 14.5V4A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>
+                        <h2>HSE知识中心</h2><p>系统学习管理体系 ，掌握实用风险管理工具，从典型事故案例中汲取教训。</p>
+                    </div>
+                    <a onclick="navigateTo('level2', {section: 'knowledge'})" class="card-link">进入板块 →</a>
+                </div>
+                <div class="card" id="card-insights">
+                    <div class="card-content">
+                        <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="23"></line><line x1="5" y1="12" x2="1" y2="12"></line><line x1="23" y1="12" x2="19" y2="12"></line><line x1="17.66" y1="6.34" x2="14.83" y2="9.17"></line><line x1="9.17" y1="14.83" x2="6.34" y2="17.66"></line><line x1="17.66" y1="17.66" x2="14.83" y2="14.83"></line><line x1="9.17" y1="9.17" x2="6.34" y2="6.34"></line><circle cx="12" cy="12" r="2"></circle></svg></div>
+                        <h2>前沿洞察</h2><p>追踪智慧HSE技术应用 ，解读ESG与可持续发展，探讨企业安全文化建设。</p>
+                    </div>
+                    <a onclick="navigateTo('level2', {section: 'insights'})" class="card-link">进入板块 →</a>
+                </div>
+                <div class="card" id="card-career">
+                    <div class="card-content">
+                        <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg></div>
+                        <h2>职业发展</h2><p>提供HSE人职业路径规划 ，汇总权威证书与培训信息，打造从业者交流社区。</p>
+                    </div>
+                    <a onclick="navigateTo('level2', {section: 'career'})" class="card-link">进入板块 →</a>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template id="level2-template">
+        <section id="level2" class="page">
+            <div class="breadcrumb"><a onclick="navigateTo('home')">首页</a> > <span id="breadcrumb-section-name"></span></div>
+            <h1 id="section-title"></h1><p id="section-description"></p>
+            <div class="article-list" id="article-list-container"></div>
+        </section>
+    </template>
+
+    <template id="level3-template">
+        <article id="level3" class="page">
+            <div class="breadcrumb"><a onclick="navigateTo('home')">首页</a> > <a id="breadcrumb-l2-link"></a> > <span id="breadcrumb-article-title"></span></div>
+            <header class="article-header"><h1 id="article-title"></h1><div class="article-meta" id="article-meta"></div></header>
+            <div class="article-body" id="article-body"></div>
+        </article>
+    </template>
+
+    <!-- ===== 1. 服务器文件管理器（替换 localStorage） ===== -->
+    <script>
+        /* 获取服务器文件列表 */
+        async function getServerFiles(category) {
+            const res = await fetch(`/list.php?cat=${category}`);
+            if (!res.ok) return [];
+            return res.json();   // [{name:"xxx.html",url:"/upload/xxx.html",date:"2025-09-29"},...]
+        }
+
+        /* 浏览服务器文件（三级页面） */
+        async function showServerFile(url) {
+            const res = await fetch(url);
+            const html = await res.text();
+            const page = document.getElementById('page-container');
+            page.innerHTML =
+                `<section class="page">
+                    <div class="breadcrumb">
+                        <a onclick="navigateTo('home')">首页</a> >
+                        <a onclick="navigateTo('level2',{section:'${url.split('/')[2]}'})">${database.sections[url.split('/')[2]].title}</a> >
+                        <span>${url.split('/').pop()}</span>
+                    </div>
+                    <div class="article-body">${html}</div>
+                </section>`;
+            document.title = `${url.split('/').pop()} - 观微HSE资讯中心`;
+        }
+    </script>
+
+    <!-- ===== 2. 原数据库+导航逻辑（一字未动） ===== -->
+    <script>
+        const database = {
+            articles: {
+                '1': {
+                    section: 'regulations',
+                    title: '深度解读《工贸企业重大事故隐患判定标准》',
+                    excerpt: '本文将逐条解析应急管理部令第10号的核心条款，并结合实际案例进行说明，帮助企业有效识别和防范重大风险...',
+                    meta: '发布日期: 2025-08-26 | 分类: 政策解读 | 作者: 网站编辑',
+                    content: `<h2>一、总则解读</h2><p>《判定标准》的发布，旨在统一全国工贸企业重大事故隐患的判定依据，是各级应急管理部门执法检查的核心标尺。企业必须高度重视...</p><h2>二、管理类重大事故隐患（3项）</h2><p>管理类隐患是基础，也是最容易被忽视的地方。特别是第三项“未落实有限空间作业安全规定”，是近年来事故多发的重灾区。</p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgODAwIDQwMCI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiNjY2MiLz48dGV4dCB4PSI0MDAiIHk9IjIwMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmIj7njovliqHpgInliqnng63nlarov5Tlm57np7vpobrnp7vlkIznpLw8L3RleHQ+PC9zdmc+" alt="现场隐患照片示例"><h3>2.1 未设置安全生产管理机构或配备专职安全生产管理人员</h3><p>根据企业规模，必须依法配备相应数量的专职安全员。注意，是“专职”，兼职不符合要求。</p><blockquote>这是一个引用块，可以用来强调重点内容或法规原文。</blockquote>`
+                },
+                '2': {
+                    section: 'knowledge',
+                    title: 'HAZOP分析在化工项目中的应用',
+                    excerpt: '危险与可操作性分析（HAZOP）是过程工业中重要的风险评估工具。本文将介绍其基本原理、分析流程和关键成功因素...',
+                    meta: '发布日期: 2025-08-25 | 分类: 风险管理工具 | 作者: 特约专家',
+                    content: '<h2>HAZOP分析</h2><p>内容即将上线，敬请期待...</p>'
+                },
+                '3': {
+                    section: 'insights',
+                    title: '智慧HSE：AI如何赋能安全管理',
+                    excerpt: '人工智能正在变革传统安全管理模式。从视频监控到预测性维护，AI的应用场景日益广泛...',
+                    meta: '发布日期: 2025-08-24 | 分类: 智慧HSE | 作者: 科技评论员',
+                    content: '<h2>智慧HSE</h2><p>内容即将上线，敬请期待...</p>'
+                },
+                '4': {
+                    section: 'career',
+                    title: '注册安全工程师（中级）备考全攻略',
+                    excerpt: '本文为备考中级注安的HSE从业者提供全面的复习计划、重点难点分析和应试技巧...',
+                    meta: '发布日期: 2025-08-23 | 分类: 证书百科 | 作者: 经验分享者',
+                    content: '<h2>注安备考攻略</h2><p>内容即将上线，敬请期待...</p>'
+                },
+                '6': {
+                    section: 'knowledge',
+                    title: '警钟长鸣：21世纪以来国内典型重特大事故时间轴',
+                    excerpt: '回顾21世纪以来那些改变了中国安全生产进程的典型重特大事故。每一桩都代价沉重，每一条教训都需铭记...',
+                    meta: '发布日期: 2025-08-27 | 分类: 事故案例 | 作者: 观微HSE',
+                    content: '[TIMELINE_CONTENT_PLACEHOLDER]'
+                },
+                'policy-privacy': {
+                    section: 'footer',
+                    title: '隐私政策',
+                    excerpt: '',
+                    meta: '最后更新: 2025-08-27',
+                    content: `<h1>观微HSE资讯中心 隐私政策</h1><p><strong>最后更新日期：2025年8月27日</strong></p><h2>引言</h2><p>观微HSE资讯中心（以下简称“我们”或“本网站”）深知隐私对您的重要性，并会尊重您的隐私。本隐私政策（以下简称“本政策”）旨在说明我们如何收集、使用、存储和保护您的信息。请在使用我们的服务前，仔细阅读并了解本政策。您使用或继续使用我们的服务，即意味着您同意我们按照本政策处理您的相关信息。</p><h2>1. 我们如何收集和使用您的信息</h2><p><strong>本网站的核心功能是提供资讯浏览，我们坚持“最小化收集”原则。在您使用本网站时，我们不会要求您注册账户或提供任何个人身份信息（如姓名、电话号码、电子邮箱地址等）。</strong></p><p>我们可能会收集和使用的信息仅限于：</p><ul><li><strong>日志信息：</strong>当您访问本网站时，我们的服务器会自动记录一些信息，例如您的IP地址、浏览器类型、访问日期和时间、以及您访问的页面记录。这些信息是匿名的，我们无法通过它们识别到具体的个人。我们使用这些信息仅为了进行网站流量分析、改善网站管理和性能，以及保障网站的运行安全。</li></ul><h2>2. Cookie 的使用</h2><p>为确保网站正常运转，我们可能会在您的计算机或移动设备上存储名为 Cookie 的小数据文件。Cookie 通常包含标识符、站点名称以及一些号码和字符。我们不会将 Cookie 用于本政策所述目的之外的任何用途。您可根据自己的偏好管理或删除 Cookie。大多数网络浏览器都设有阻止 Cookie 的功能。</p><h2>3. 我们如何共享、转让、公开披露您的信息</h2><p>鉴于我们不主动收集您的个人身份信息，因此不存在共享、转让或公开披露您个人信息的情况。我们承诺，绝不会向任何第三方出售或提供您的任何信息。</p><p>唯一的例外是：根据法律法规的强制性要求，或应政府主管部门的明确要求，我们可能会披露必要的日志信息。</p><h2>4. 我们如何保护您的信息</h2><p>我们已使用符合业界标准的安全防护措施保护您提供的信息，防止数据遭到未经授权的访问、公开披露、使用、修改、损坏或丢失。例如，我们会使用加密技术（如SSL）确保数据的传输安全。</p><h2>5. 第三方服务</h2><p>本网站可能链接至第三方提供的网站或服务。这些第三方服务有其独立的隐私政策，本政策不适用于这些服务。我们建议您在使用第三方服务前，仔细阅读其隐私政策。</p><h2>6. 本政策如何更新</h2><p>我们可能会适时修订本政策。当本政策发生变更时，我们会在本页面上发布更新后的版本，并更新文首的“最后更新日期”。对于重大变更，我们还可能提供更显著的通知。请您定期访问本页面以了解最新的隐私政策。</p><h2>7. 如何联系我们</h2><p>如果您对本隐私政策有任何疑问、意见或建议，欢迎通过以下方式与我们联系：</p><p><strong>电子邮箱：HSE1st.cn@outlook.com</p>`
+                },
+                'policy-terms': {
+                    section: 'footer',
+                    title: '服务条款',
+                    excerpt: '',
+                    meta: '最后更新: 2025-08-27',
+                    content: `<h1>观微HSE资讯中心 服务条款</h1><p><strong>最后更新日期：2025年8月27日</strong></p><h2>1. 接受条款</h2><p>欢迎访问观微HSE资讯中心（以下简称“本网站”）。本服务条款（以下简称“本条款”）是您与本网站之间关于访问和使用本网站所提供的资讯、内容及服务的协议。在访问本网站之前，请您务必仔细阅读并透彻理解本条款。您访问或使用本网站的行为，即表示您已阅读、理解并同意接受本条款的全部内容。如果您不同意本条款的任何内容，请立即停止使用本网站。</p><h2>2. 服务描述</h2><p>本网站是一个专注于安全、健康与环境（HSE）领域的资讯平台，致力于提供包括但不限于法律法规解读、知识案例分享、行业前沿洞察及职业发展信息等内容。本网站提供的所有内容仅供参考、学习与交流之用，不构成任何形式的专业建议、法律意见或操作指导。用户在具体工作中应用本网站信息时，应结合实际情况并咨询具备相应资质的专业人士。</p><h2>3. 知识产权</h2><p>3.1 本网站发布的所有原创内容，包括但不限于文章、图片、图表、Logo、页面设计等的知识产权均归<strong>[请在此处填写您的网站名称或您的姓名]</strong>所有。未经本网站书面许可，任何单位及个人不得以任何方式或理由对上述内容进行使用、复制、修改、传播或与其他产品捆绑使用、销售。</p><p>3.2 本网站部分内容可能引用或转载自第三方，其版权归原作者或原出处所有。我们转载或引用该等内容仅为传播更多信息之目的，并不意味着赞同其观点或证实其内容的真实性。如您认为本网站的内容侵犯了您的合法权益，请根据下文“联系我们”部分提供的方式与我们联系，我们将及时核实处理。</p><h2>4. 用户行为规范</h2><p>本网站目前不提供用户注册或内容上传功能。作为访问者，您承诺不利用本网站从事任何非法或侵犯他人权益的活动，包括但不限于：</p><ul><li>发布、传送、传播、储存危害国家安全、破坏社会稳定、违反公序良俗、侮辱、诽谤、淫秽、暴力以及任何违反国家法律法规的内容。</li><li>利用本网站从事任何可能对互联网正常运转造成不利影响的行为。</li><li>未经授权，试图探查、扫描、测试本网站系统或网络的弱点，或其它实施破坏网络安全的行为。</li></ul><h2>5. 免责声明</h2><p>5.1 本网站致力于提供准确、及时的信息，但不对所有内容的准确性、完整性、可靠性或时效性作任何明示或暗示的保证。因使用或依赖本网站内容而导致的任何直接或间接损失，本网站不承担任何法律责任。</p><p>5.2 本网站可能包含指向第三方网站的链接。这些链接仅为方便用户而提供，本网站对这些第三方网站的内容、隐私政策或操作不承担任何责任。</p><h2>6. 条款的修订</h2><p>本网站有权在必要时修改本条款。一旦本条款的内容发生变动，我们将在本页面上公布修改后的版本，并更新文首的“最后更新日期”。我们鼓励您定期查看本页面以了解最新的服务条款。若您在条款修改后继续使用本网站，则视为您已接受该等修改。</p><h2>7. 联系我们</h2><p>如果您对本服务条款有任何疑问，欢迎通过以下方式与我们联系：</p><p><strong>电子邮箱：HSE1st.cn@outlook.com</p>`
+                }
+            },
+            sections: {
+                regulations: { title: '法规标准库', description: '查询最新法规，获取权威标准，洞悉政策走向。' },
+                knowledge: { title: 'HSE知识中心', description: '构建系统的HSE知识体系，从理论到实践。' },
+                insights: { title: '前沿洞察', description: '把握行业脉搏，探索HSE的未来。' },
+                career: { title: '职业发展', description: '助力每一位HSE人的成长与蜕变。' }
+            }
+        };
+
+        const timelineHTML = `<div class="timeline-container-wrapper"><div class="timeline"><div class="year-section">2003年</div><div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">2003年12月23日</div><div class="timeline-title">重庆开县中石油川东北气矿"12·23"特大井喷事故</div><div class="timeline-details"><strong>地点:</strong> 重庆开县  
+<strong>概况:</strong> 罗家16H井在起钻时发生井喷，高浓度硫化氢天然气喷涌而出。  
+<strong>伤亡:</strong> 243人中毒死亡，4000多人受伤。</div><div class="timeline-impact"><h4>深远影响</h4><ul><li>首次让公众大规模认知到"硫化氢"的剧毒性，推动了高含硫气田安全管理规定的出台。</li><li>促使石油天然气行业全面建立并实施国际级HSE管理体系，"井控"成为安全管理的重中之重。</li></ul></div></div></div><div class="year-section">2010年</div><div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">2010年7月16日</div><div class="timeline-title">大连中石油"7·16"输油管道爆炸火灾事故</div><div class="timeline-details"><strong>地点:</strong> 辽宁大连  
+<strong>概况:</strong> 向油轮注入脱硫剂时因误操作导致管道爆炸，引发大火和大规模原油泄漏。  
+<strong>损失:</strong> 污染海域超430平方公里，造成严重环境灾难。</div><div class="timeline-impact"><h4>深远影响</h4><ul><li>暴露了危化品码头作业安全的巨大漏洞，推动了港口危险货物安全管理规定的修订。</li><li>敲响了海洋环境安全的警钟，促使政府和企业加强对溢油事故的应急响应能力。</li></ul></div></div></div><div class="year-section">2011年</div><div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">2011年7月23日</div><div class="timeline-title">甬温线"7·23"特别重大铁路交通事故</div><div class="timeline-details"><strong>地点:</strong> 浙江温州  
+<strong>概况:</strong> D301次列车与D3115次列车发生追尾，多节车厢脱轨或坠桥。  
+<strong>伤亡:</strong> 40人死亡，172人受伤。</div><div class="timeline-impact"><h4>深远影响</h4><ul><li>直接导致铁道部政企分开，改组为国家铁路局和中国铁路总公司。</li><li>推动了中国高铁信号系统、调度通信和应急预案的全面技术升级。</li><li>社交媒体首次成为重大公共事件的强大舆论监督力量。</li></ul></div></div></div><div class="year-section">2013年</div><div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">2013年11月22日</div><div class="timeline-title">青岛中石化"11·22"东黄输油管道泄漏爆炸事故</div><div class="timeline-details"><strong>地点:</strong> 山东青岛  
+<strong>概况:</strong> 输油管道泄漏，原油进入市政排水暗渠，遇火花引发连环爆炸。  
+<strong>伤亡:</strong> 62人死亡，136人受伤。</div><div class="timeline-impact"><h4>深远影响</h4><ul><li>暴露了城市地下管网管理的巨大黑洞，推动全国开展地下管线普查和信息化建设。</li><li>强化了工业项目规划与城市发展规划的衔接，严控危险源与居民区的安全距离。</li></ul></div></div></div><div class="year-section">2014年</div><div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">2014年8月2日</div><div class="timeline-title">昆山中荣金属"8·2"特别重大粉尘爆炸事故</div><div class="timeline-details"><strong>地点:</strong> 江苏昆山  
+<strong>概况:</strong> 汽车轮毂抛光车间内铝粉尘浓度超标，遇电器火花引发空间爆炸。  
+<strong>伤亡:</strong> 146人死亡，114人受伤。</div><div class="timeline-impact"><h4>深远影响</h4><ul><li>首次让"粉尘爆炸"风险进入全国性安全监管视野，在全国开展工贸行业粉尘防爆专项整治。</li><li>推动了《粉尘防爆安全规程》等一系列国家标准的制定和强制执行。</li></ul></div></div></div><div class="year-section">2015年</div><div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">2015年8月12日</div><div class="timeline-title">天津港"8·12"瑞海公司危险品仓库特别重大火灾爆炸事故</div><div class="timeline-details"><strong>地点:</strong> 天津滨海新区  
+<strong>概况:</strong> 仓库内违规存放的硝化棉自燃，引爆了硝酸铵等多种危险化学品。  
+<strong>伤亡:</strong> 165人遇难，8人失踪，798人受伤。</div><div class="timeline-impact"><h4>深远影响</h4><ul><li><strong>直接催生了应急管理部的成立</strong>，构建了统一高效的国家应急体系。</li><li>开启了史上最严厉的危化品安全综合治理，对全国的化工园区和危化品企业进行重新评估。</li><li>"党政同责、一岗双责"和终身追责制度被以前所未有的力度执行。</li></ul></div></div></div><div class="year-section">2019年</div><div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">2019年3月21日</div><div class="timeline-title">江苏响水"3·21"天嘉宜化工厂特别重大爆炸事故</div><div class="timeline-details"><strong>地点:</strong> 江苏盐城  
+<strong>概况:</strong> 企业长期违法贮存的硝化废料自燃，引发连环爆炸。  
+<strong>伤亡:</strong> 78人死亡，76人重伤。</div><div class="timeline-impact"><h4>深远影响</h4><ul><li>引发全国性的化工产业安全环保整治风暴，倒逼产业结构调整和转型升级。</li><li>首次将"危险废物"的风险提升到与危化品同等重要的位置，推动了对工业废料全生命周期的安全管理。</li></ul></div></div></div><div class="year-section">2022年</div><div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">2022年4月29日</div><div class="timeline-title">长沙望城居民自建房"4·29"特别重大坍塌事故</div><div class="timeline-details"><strong>地点:</strong> 湖南长沙  
+<strong>概况:</strong> 一栋8层楼的居民自建房（违规加盖）突然整体坍塌。  
+<strong>伤亡:</strong> 54人死亡，9人受伤。</div><div class="timeline-impact"><h4>深远影响</h4><ul><li>暴露了城市化进程中"自建房"领域的巨大安全盲区，推动全国开展经营性自建房安全专项整治。</li><li>促使中央和地方出台或修订针对自建房规划、建设、使用的管理办法。</li></ul></div></div></div><div class="year-section">……</div></div></div>`;
+
+        // --- 核心导航与渲染逻辑（完全保留） ---
+        const pageContainer = document.getElementById('page-container');
+
+        function navigateTo(pageId, params = {}) {
+            pageContainer.innerHTML = '';
+            const templateId = `${pageId}-template`;
+            const template = document.getElementById(templateId);
+            if (!template) {
+                console.error(`Template with id "${templateId}" not found.`);
+                return;
+            }
+            const newPage = template.content.cloneNode(true);
+            pageContainer.appendChild(newPage);
+
+            switch (pageId) {
+                case 'level2':
+                    renderLevel2Page(params.section);
+                    break;
+                case 'level3':
+                    renderLevel3Page(params.articleId);
+                    break;
+                default:
+                    document.title = '观微HSE资讯中心 - 首页';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function renderLevel2Page(sectionKey) {
+            const section = database.sections[sectionKey];
+            if (!section) return;
+
+            document.getElementById('breadcrumb-section-name').textContent = section.title;
+            document.getElementById('section-title').textContent = section.title;
+            document.getElementById('section-description').textContent = section.description;
+            document.title = `${section.title} - 观微HSE资讯中心`;
+
+            const listContainer = document.getElementById('article-list-container');
+            /* 1. 渲染原有数据库文章（完全不动） */
+            Object.keys(database.articles).forEach(id => {
+                const article = database.articles[id];
+                if (article.section === sectionKey) {
+                    const item = document.createElement('div');
+                    item.className = 'article-item';
+                    item.innerHTML = `<h3 class="item-title"><a onclick="navigateTo('level3', {articleId: '${id}'})">${escapeHTML(article.title)}</a></h3><p class="item-excerpt">${escapeHTML(article.excerpt)}</p><div class="item-meta">${escapeHTML(article.meta)}</div>`;
+                    listContainer.appendChild(item);
+                }
+            });
+
+            /* 2. 追加渲染服务器上传文件（新增） */
+            injectServerFiles(sectionKey);
+        }
+
+        async function injectServerFiles(sectionKey) {
+            const listContainer = document.getElementById('article-list-container');
+            const files = await getServerFiles(sectionKey);
+            files.forEach(f => {
+                const div = document.createElement('div');
+                div.className = 'article-item';
+                div.innerHTML = `
+                    <h3 class="item-title">
+                        <a onclick="showServerFile('${f.url}')" style="cursor:pointer">${escapeHTML(f.name)}</a>
+                    </h3>
+                    <p class="item-excerpt">后台上传的HTML文件</p>
+                    <div class="item-meta">上传日期：${f.date}</div>`;
+                listContainer.appendChild(div);
+            });
+        }
+
+        function renderLevel3Page(articleId) {
+            const article = database.articles[articleId];
+            if (!article) return;
+            if (article.section && database.sections[article.section]) {
+                const section = database.sections[article.section];
+                const breadcrumbL2 = document.getElementById('breadcrumb-l2-link');
+                if (breadcrumbL2) {
+                    breadcrumbL2.textContent = section.title;
+                    breadcrumbL2.setAttribute('onclick', `navigateTo('level2', {section: '${article.section}'})`);
+                }
+            } else {
+                const breadcrumbL2 = document.getElementById('breadcrumb-l2-link');
+                if (breadcrumbL2) {
+                    breadcrumbL2.style.display = 'none';
+                    breadcrumbL2.nextSibling.textContent = '';
+                }
+            }
+            const breadcrumbArticleTitle = document.getElementById('breadcrumb-article-title');
+            if (breadcrumbArticleTitle) {
+                breadcrumbArticleTitle.textContent = article.title;
+            }
+            document.getElementById('article-title').textContent = article.title;
+            document.getElementById('article-meta').textContent = article.meta;
+            if (article.content === '[TIMELINE_CONTENT_PLACEHOLDER]') {
+                document.getElementById('article-body').innerHTML = timelineHTML;
+            } else {
+                document.getElementById('article-body').innerHTML = article.content;
+            }
+            document.title = `${article.title} - 观微HSE资讯中心`;
+        }
+
+        function escapeHTML(str) {
+            const p = document.createElement('p');
+            p.appendChild(document.createTextNode(str));
+            return p.innerHTML;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            navigateTo('home');
+        });
+    </script>
+
+</body>
+</html>
